@@ -15,7 +15,7 @@ end
 
 ---@param s string
 ---@return string
-function stringpp.captalize(s)
+function stringpp.capitalize(s)
     return string.upper(string.sub(s, 1)) .. string.lower(string.sub(s, 2))
 end
 
