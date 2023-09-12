@@ -6,11 +6,11 @@ local lua_math = require("math")
 
 -- auxiliars
 local function expected_number(x)
-    assert(type(x) == "number", "expected number, got " .. type(x), 2)
+    assert(type(x) == "number", "expected number, got " .. type(x))
 end
 
 local function expected_arg(func_name, x, tp, arg)
-    assert(type(x) == tp, string.format("bad argument #%d to '%s' (%s expected, got %s)"), 2, arg, func_name, tp, type(x))
+    assert(type(x) == tp, string.format("bad argument #%d to '%s' (%s expected, got %s)"), arg, func_name, tp, type(x))
 end
 
 local function expected_args(func_name, values, expected)
