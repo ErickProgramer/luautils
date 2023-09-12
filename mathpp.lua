@@ -3,6 +3,8 @@
 
 local lua_math = require("math")
 
+local format = string.format
+
 
 -- auxiliars
 local function expected_number(x)
@@ -10,7 +12,7 @@ local function expected_number(x)
 end
 
 local function expected_arg(func_name, x, tp, arg)
-    assert(type(x) == tp, string.format("bad argument #%d to '%s' (%s expected, got %s)"), arg, func_name, tp, type(x))
+    assert(type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type(x)))
 end
 
 local function expected_args(func_name, values, expected)
@@ -99,8 +101,8 @@ end
 function math.copysign(x, y)
     expected_arg("copysign", x, "number", 1)
     expected_arg("copysign", y, "number", 1)
-    if y < 0 then return -math.abs(x) end
-    return math.abs(x)
+    if y < 0 then return -lua_math.abs(x) end
+    return lua_math.abs(x)
 end
 
 ---@param x number
@@ -293,6 +295,13 @@ end
 function math.tanh(x)
     expected_number(x)
     return (lua_math.exp(2*x) - 1) / (lua_math.exp(2*x + 1))
+end
+
+---@param x number
+---@return number
+function math.abs(x)
+    expected_number(x)
+    return lua_math.abs(x)
 end
 
 return math
