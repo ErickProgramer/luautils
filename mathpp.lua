@@ -6,15 +6,24 @@ local lua_math = require("math")
 local format = string.format
 
 
--- auxiliars
-local function expected_number(x)
-    assert(type(x) == "number", "expected number, got " .. type(x))
+
+-- expansion of `type`
+local function type_pp(x)
+    if lua_math.type(x) ~= "nil" then return lua_math.type(x) else return type(x) end
 end
 
 local function expected_arg(func_name, x, tp, arg)
-    assert(type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type(x)))
+    if tp == "float" or tp == "integer" then
+        assert(lua_math.type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type_pp(x)))
+    else
+        assert(type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type(x)))
+    end
 end
 
+-- to errors
+---@param func_name string
+---@param values table
+---@param expected table
 local function expected_args(func_name, values, expected)
     for i = 1, #values do
         expected_arg(func_name, values[i], expected[i], i)
@@ -33,35 +42,35 @@ math.nan = 0/0
 ---@param x number
 ---@return number
 function math.acos(x)
-    expected_number(x)
+    expected_args("acos", {x}, {"number"})
     return lua_math.acos(x)
 end
 
 ---@param x number
 ---@return number
 function math.acosh(x)
-    expected_number(x)
+    expected_args("acosh", {x}, {"number"})
     return lua_math.log(x + lua_math.sqrt(x^2 - 1))
 end
 
 ---@param x number
 ---@return number
 function math.asin(x)
-    expected_number(x)
+    expected_args("asin", {x}, {"number"})
     return lua_math.asin(x)
 end
 
 ---@param x number
 ---@return number
 function math.asinh(x)
-    expected_number(x)
+    expected_args("asinh", {x}, {"number"})
     return lua_math.log(x + lua_math.sqrt(x^2 + 1))
 end
 
 ---@param x number
 ---@return number
 function math.atan(x)
-    expected_number(x)
+    expected_args("atan", {x}, {"number"})
    return lua_math.atan(x)
 end
 
@@ -69,22 +78,21 @@ end
 ---@param y number
 ---@return number
 function math.atan2(y, x)
-    expected_arg("atan", y, "number", 1)
-    expected_arg("atan", x, "number", 1)
+    expected_args("atan2", {y,x}, {"number", "integer"})
     return lua_math.atan(y, x)
 end
 
 ---@param x number
 ---@return number
 function math.atanh(x)
-    expected_number(x)
+    expected_args("atanh", {x}, {"number"})
     return 0.5 * lua_math.log((1 + x) / (1 - x))
 end
 
 ---@param x number
 ---@return number
 function math.ceil(x)
-    expected_number(x)
+    expected_args("ceil", {x}, {"number"})
     return lua_math.floor(x) + 1
 end
 
@@ -92,6 +100,7 @@ end
 ---@param k integer
 ---@return integer
 function math.comb(n, k)
+    expected_args("comb", {n, k}, {"integer", "integer"})
     return math.factorial(n) / (math.factorial(k) * (n - k))
 end
 
@@ -99,8 +108,7 @@ end
 ---@param y number
 ---@return number
 function math.copysign(x, y)
-    expected_arg("copysign", x, "number", 1)
-    expected_arg("copysign", y, "number", 1)
+    expected_args("copysign", {x, y}, {"number", "number"})
     if y < 0 then return -lua_math.abs(x) end
     return lua_math.abs(x)
 end
@@ -108,21 +116,21 @@ end
 ---@param x number
 ---@return number
 function math.cos(x)
-    expected_number(x)
+    expected_args("cos", {x}, {"number"})
     return lua_math.cos(x)
 end
 
 ---@param x number
 ---@return number
 function math.cosh(x)
-    expected_number(x)
+    expected_args("cosh", {x}, {"number"})
     return (lua_math.exp(x) + lua_math.exp(-x)) / 2
 end
 
 ---@param x number
 ---@return number
 function math.degress(x)
-    expected_number(x)
+    expected_args("degress", {x}, {"number"})
     return x * (180 / math.pi)
 end
 
@@ -132,38 +140,35 @@ end
 ---@param y2 number
 ---@return number
 function math.dist(x1, y1, x2, y2)
-    expected_arg("dist", x1, "number", 1)
-    expected_arg("dist", y1, "number", 1)
-    expected_arg("dist", x2, "number", 1)
-    expected_arg("dist", y2, "number", 1)
+    expected_args("dist", {x1, y1, x2, y2}, {"number", "number", "number", "number"})
     return lua_math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
 end
 
 ---@param x number
 ---@return number
 function math.exp(x)
-    expected_number(x)
+    expected_args("exp", {x}, {"number"})
     return lua_math.exp(x)
 end
 
 ---@param x number
 ---@return number
 function math.expm1(x)
-    expected_number(x)
+    expected_args("expm1", {x}, {"number"})
     return lua_math.exp(x) - 1
 end
 
 ---@param x number
 ---@return number
 function math.fabs(x)
-    expected_number(x)
+    expected_args("fabs", {x}, {"number"})
     return lua_math.abs(x)
 end
 
 ---@param x integer
 ---@return number
 function math.factorial(x)
-    assert(lua_math.type(x) == "integer", "impossible to make factorial of float")
+    expected_args("factorial", {x}, {"integer"})
 
     local fat = 1
 
@@ -177,7 +182,7 @@ end
 ---@param x number
 ---@return integer
 function math.floor(x)
-    expected_number(x)
+    expected_args("floor", {x}, {"number"})
     return lua_math.floor(x)
 end
 
@@ -185,8 +190,7 @@ end
 ---@param y number
 ---@return number
 function math.fmod(x, y)
-    expected_arg("fmod", x, "number", 1)
-    expected_arg("fmod", y, "number", 1)
+    expected_args("fmod", {x, y}, {"number", "number"})
     return lua_math.fmod(x, y)
 end
 
@@ -194,10 +198,11 @@ end
 ---@return integer
 ---@return integer
 function math.frexp(x)
-    expected_number(x)
+    expected_args("frexp", {x}, {"number"})
+
     if x == 0 then
         return 0, 0
-    elseif x == math.huge or x == -math.huge or x ~= x then
+    elseif x == lua_math.huge or x == -lua_math.huge or x ~= x then
         return x, 0
     end
 
@@ -213,7 +218,7 @@ end
 ---@param seq table
 ---@return number
 function math.fsum(seq)
-    expected_arg("fsum", seq, "table", 1)
+    expected_args("fsum", {seq}, {"table"})
     local sum = 0
     for i, v in ipairs(seq) do
         sum = sum + v
@@ -225,22 +230,21 @@ end
 ---@param y number
 ---@return number
 function math.hypot(x, y)
-    expected_arg("hypot", x, "number", 1)
-    expected_arg("hypot", x, "number", 2)
+    expected_args("hypot", {x, y}, {"number", "number"})
     return lua_math.sqrt(x^2 + y^2)
 end
 
 ---@param x number
 ---@return boolean
 function math.isinf(x)
-    expected_number(x)
+    expected_args("isinf", {x}, {"number"})
     return x == math.inf
 end
 
 ---@param x number
 ---@return boolean
 function math.isnan(x)
-    expected_number(x)
+    expected_args("isnan", {x}, {"number"})
     return x == math.nan
 end
 
@@ -248,8 +252,7 @@ end
 ---@param i number
 ---@return number
 function math.ldexp(x, i)
-    expected_arg("ldexp", x, "number", 1)
-    expected_arg("ldexp", i, "number", 2)
+    expected_args("ldexp", {x, i}, {"number", "number"})
     return x * 2 ^ i
 end
 
@@ -257,50 +260,49 @@ end
 ---@param base? integer
 ---@return number
 function math.log(x, base)
-    expected_arg("log", x, "number", 1)
-    expected_arg("log", base, "integer", 1)
+    expected_args("log", {x, base}, {"number", "integer"})
     return lua_math.log(x, base)
 end
 
 ---@param x number
 ---@return number
 function math.sin(x)
-    expected_number(x)
+    expected_args("sin", {x}, {"number"})
     return lua_math.sin(x)
 end
 
 ---@param x number
 ---@return number
 function math.sinh(x)
-    expected_number(x)
+    expected_args("sinh", {x}, {"number"})
     return (lua_math.exp(x) -(lua_math.exp(-x)))/2
 end
 
 ---@param x number
 ---@return number
 function math.sqrt(x)
-    expected_number(x)
+    expected_args("sqrt", {x}, {"number"})
     return lua_math.sqrt(x)
 end
 
 ---@param x number
 ---@return number
 function math.tan(x)
-    expected_number(x)
+    expected_args("tan", {x}, {"number"})
     return lua_math.tan(x)
 end
 
 ---@param x number
 ---@return number
 function math.tanh(x)
-    expected_number(x)
+    expected_args("tanh", {x}, {"number"})
     return (lua_math.exp(2*x) - 1) / (lua_math.exp(2*x + 1))
 end
 
 ---@param x number
 ---@return number
 function math.abs(x)
-    expected_number(x)
+    expected_args("abs", {x}, {"number"})
     return lua_math.abs(x)
 end
 
