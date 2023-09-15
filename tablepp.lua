@@ -20,9 +20,7 @@ function tablepp.min(t)
     if math.min then
         return math.min(unpack(t))
     end
-    if math.max then
-        return math.max(unpack(t))
-    end
+
     local min_value = t[1]
 
     for _, v in ipairs(t) do
