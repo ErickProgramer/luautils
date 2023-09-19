@@ -15,6 +15,7 @@ math.inf = lua_math.huge
 math.nan = 0/0
 ---------------
 
+--- return the acos of `x`
 ---@param x number
 ---@return number
 function math.acos(x)
@@ -22,6 +23,7 @@ function math.acos(x)
     return lua_math.acos(x)
 end
 
+--- return the acosh of `x`
 ---@param x number
 ---@return number
 function math.acosh(x)
@@ -29,6 +31,7 @@ function math.acosh(x)
     return lua_math.log(x + lua_math.sqrt(x^2 - 1))
 end
 
+--- return the asin of `x`
 ---@param x number
 ---@return number
 function math.asin(x)
@@ -36,6 +39,7 @@ function math.asin(x)
     return lua_math.asin(x)
 end
 
+--- return the asinh of `x`
 ---@param x number
 ---@return number
 function math.asinh(x)
@@ -43,6 +47,7 @@ function math.asinh(x)
     return lua_math.log(x + lua_math.sqrt(x^2 + 1))
 end
 
+--- return the atan of `x`
 ---@param x number
 ---@return number
 function math.atan(x)
@@ -50,6 +55,7 @@ function math.atan(x)
    return lua_math.atan(x)
 end
 
+--- return the atan2 of `x` and `y`
 ---@param x number
 ---@param y number
 ---@return number
@@ -58,6 +64,7 @@ function math.atan2(y, x)
     return lua_math.atan(y, x)
 end
 
+--- return the atanh of `x`
 ---@param x number
 ---@return number
 function math.atanh(x)
@@ -65,13 +72,15 @@ function math.atanh(x)
     return 0.5 * lua_math.log((1 + x) / (1 - x))
 end
 
+--- rounds to the nearest whole number
 ---@param x number
 ---@return number
 function math.ceil(x)
     expected_args("ceil", {x}, {"number"})
-    return lua_math.floor(x) + 1
+    return lua_math.ceil(x)
 end
 
+--- Find the total number of possibilities to choose `k` things from `n` items
 ---@param n integer
 ---@param k integer
 ---@return integer
@@ -80,6 +89,7 @@ function math.comb(n, k)
     return math.factorial(n) / (math.factorial(k) * (n - k))
 end
 
+--- copy the signal of `y` to `x` (doesn't work with 0)
 ---@param x number
 ---@param y number
 ---@return number
@@ -89,6 +99,7 @@ function math.copysign(x, y)
     return lua_math.abs(x)
 end
 
+--- return the cos of `x`
 ---@param x number
 ---@return number
 function math.cos(x)
@@ -96,6 +107,7 @@ function math.cos(x)
     return lua_math.cos(x)
 end
 
+--- return the cosh of `x`
 ---@param x number
 ---@return number
 function math.cosh(x)
@@ -103,6 +115,7 @@ function math.cosh(x)
     return (lua_math.exp(x) + lua_math.exp(-x)) / 2
 end
 
+--- Convert angles from radians to degrees
 ---@param x number
 ---@return number
 function math.degress(x)
@@ -110,6 +123,7 @@ function math.degress(x)
     return x * (180 / math.pi)
 end
 
+--- return the distance of the points `x1`, `y1`, `x2` and `y2`
 ---@param x1 number
 ---@param y1 number
 ---@param x2 number
@@ -120,6 +134,7 @@ function math.dist(x1, y1, x2, y2)
     return lua_math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
 end
 
+--- returns the value `e^x` (equivalent to: `math.e ^ x`)
 ---@param x number
 ---@return number
 function math.exp(x)
@@ -127,6 +142,7 @@ function math.exp(x)
     return lua_math.exp(x)
 end
 
+--- return the expm1 of `x`
 ---@param x number
 ---@return number
 function math.expm1(x)
@@ -134,6 +150,7 @@ function math.expm1(x)
     return lua_math.exp(x) - 1
 end
 
+--- return `x` positive
 ---@param x number
 ---@return number
 function math.fabs(x)
@@ -141,6 +158,7 @@ function math.fabs(x)
     return lua_math.abs(x)
 end
 
+--- return the factorial of `x`
 ---@param x integer
 ---@return number
 function math.factorial(x)
@@ -155,6 +173,7 @@ function math.factorial(x)
     return fat
 end
 
+--- convert `x` to integer
 ---@param x number
 ---@return integer
 function math.floor(x)
@@ -162,6 +181,7 @@ function math.floor(x)
     return lua_math.floor(x)
 end
 
+--- Returns the remainder of the division of x by y that rounds the quotient towards zero.
 ---@param x number
 ---@param y number
 ---@return number
@@ -170,6 +190,7 @@ function math.fmod(x, y)
     return lua_math.fmod(x, y)
 end
 
+--- Find the mantissa and exponent of a number
 ---@param x number
 ---@return integer
 ---@return integer
@@ -191,6 +212,7 @@ function math.frexp(x)
     return x, e
 end
 
+--- returns the sum of the table `seq`
 ---@param seq table
 ---@return number
 function math.fsum(seq)
@@ -202,6 +224,7 @@ function math.fsum(seq)
     return sum
 end
 
+--- Find the hypotenuse of a right-angled triangle where perpendicular and base are known
 ---@param x number
 ---@param y number
 ---@return number
@@ -210,6 +233,7 @@ function math.hypot(x, y)
     return lua_math.sqrt(x^2 + y^2)
 end
 
+--- returns if `x` is `inf` (infinity)
 ---@param x number
 ---@return boolean
 function math.isinf(x)
@@ -217,6 +241,7 @@ function math.isinf(x)
     return x == math.inf
 end
 
+--- returns if `x` is `nan` (Not a Number)
 ---@param x number
 ---@return boolean
 function math.isnan(x)
@@ -224,22 +249,31 @@ function math.isnan(x)
     return x == math.nan
 end
 
+--- Returns `x * 2 ^ i`
 ---@param x number
 ---@param i number
 ---@return number
 function math.ldexp(x, i)
+    lua_math.ldexp
     expected_args("ldexp", {x, i}, {"number", "number"})
     return x * 2 ^ i
 end
 
+--- Returns the logarithm of `x` in the base `base`
 ---@param x number
 ---@param base? integer
 ---@return number
 function math.log(x, base)
+    if not base then
+        expected_args("log", {x}, {"number"})
+        return lua_math.log(x)
+    end
     expected_args("log", {x, base}, {"number", "integer"})
     return lua_math.log(x, base)
 end
 
+
+--- returns the sine of `x`
 ---@param x number
 ---@return number
 function math.sin(x)
@@ -247,6 +281,7 @@ function math.sin(x)
     return lua_math.sin(x)
 end
 
+--- returns the sinh of `x`
 ---@param x number
 ---@return number
 function math.sinh(x)
@@ -254,6 +289,7 @@ function math.sinh(x)
     return (lua_math.exp(x) -(lua_math.exp(-x)))/2
 end
 
+--- returns the square root of `x`
 ---@param x number
 ---@return number
 function math.sqrt(x)
@@ -261,6 +297,7 @@ function math.sqrt(x)
     return lua_math.sqrt(x)
 end
 
+--- returns the tangent of `x`
 ---@param x number
 ---@return number
 function math.tan(x)
@@ -268,6 +305,7 @@ function math.tan(x)
     return lua_math.tan(x)
 end
 
+--- returns the tanh of `x`
 ---@param x number
 ---@return number
 function math.tanh(x)
@@ -275,6 +313,7 @@ function math.tanh(x)
     return (lua_math.exp(2*x) - 1) / (lua_math.exp(2*x + 1))
 end
 
+--- returns the absolute value of `x`
 ---@param x number
 ---@return number
 function math.abs(x)

@@ -6,6 +6,7 @@ local expected_args = aux.expected_args
 
 local tablepp = {}
 
+--- returns the largest value of `t`
 ---@param t table
 ---@return any
 function tablepp.max(t)
@@ -24,6 +25,7 @@ function tablepp.max(t)
     return max_value
 end
 
+--- returns the smallest value of `t`
 ---@param t table
 ---@return any
 function tablepp.min(t)
@@ -42,6 +44,7 @@ function tablepp.min(t)
     return min_value
 end
 
+--- returns the index where the largest value of `t` is
 ---@param t table
 ---@return integer
 function tablepp.argmax(t)
@@ -59,6 +62,7 @@ function tablepp.argmax(t)
     return max_i
 end
 
+--- returns the index where the smallest value of `t` is
 ---@param t table
 ---@return integer
 function tablepp.argmin(t)
@@ -76,6 +80,10 @@ function tablepp.argmin(t)
     return min_i
 end
 
+--- transform `t` in string
+---```lua
+---tablepp.list_tostring({{1,"a"}, 1, {"\n", true, false}}) --> {{1, "a"}, 1, {"\n", true, false}}
+---```
 ---@param t table
 ---@return string
 function tablepp.list_tostring(t)
@@ -96,6 +104,11 @@ function tablepp.list_tostring(t)
     return str .."}"
 end
 
+--- print the table `t`
+---```
+---tablepp.list_print({1,2})
+---```
+--- {1, 2}
 ---@param t table
 ---@param end_line? string
 function tablepp.list_print(t, end_line)
@@ -122,6 +135,7 @@ function tablepp.list_print(t, end_line)
     io.write(end_line)
 end
 
+--- similar to Lua's standard print, but with table support
 ---@param ... any
 function tablepp.print(...)
     local args = {...}
@@ -136,22 +150,24 @@ function tablepp.print(...)
     io.write("\n")
 end
 
+--- orders from smallest to largest by default, but if `reverse` is true, it orders from largest to smallest
 ---@param t table
 ---@param reverse? boolean
 function tablepp.sort(t, reverse)
     expected_args("sort", {t, reverse}, {"table", "boolean"})
 
     if reverse then
-        return table.sort(t, function (a, b)
+        table.sort(t, function (a, b)
             return a > b
         end)
     else
-        return table.sort(t, function (a, b)
+        table.sort(t, function (a, b)
             return a < b
         end)
     end
 end
 
+--- works exactly the same as the Lua unpack, but with support for all versions of Lua
 ---@generic T
 ---@param t T[]
 ---@return T ...
@@ -160,10 +176,11 @@ function tablepp.unpack(t)
     return unpack(t)
 end
 
+---Executes the given f over all elements of table. For each element, f is called with the index and respective value as arguments. If f returns a non-nil value, then the loop is broken, and this value is returned as the final value of foreach.
 ---@generic T
 ---@param list T[]
 ---@param callback fun(key: T, value: T): T | nil
----@return nil
+---@return T | nil
 function tablepp.foreach(list, callback)
     expected_args("foreach", {list, callback}, {"table", "function"})
 
@@ -179,10 +196,11 @@ function tablepp.foreach(list, callback)
     return nil
 end
 
+--- Executes the given f over the numerical indices of table. For each index, f is called with the index and respective value as arguments. Indices are visited in sequential order, from 1 to n, where n is the size of the table. If f returns a non-nil value, then the loop is broken and this value is returned as the result of foreachi.
 ---@generic T
 ---@param list T[]
 ---@param callback fun(key: T, value: T): T | nil
----@return nil
+---@return T | nil
 function tablepp.foreachi(list, callback)
     expected_args("foreachi", {list, callback}, {"table", "function"})
 
@@ -198,6 +216,7 @@ function tablepp.foreachi(list, callback)
     return nil
 end
 
+--- returns all the original table but only where the function returned true
 ---@generic T
 ---@param list T[]
 ---@param callback fun(key: T, value: T):boolean
@@ -214,6 +233,7 @@ function tablepp.filter(list, callback)
     return result
 end
 
+--- similar to filter but iterates like an array, thus maintaining the sequence correctly, unlike filter
 ---@generic T
 ---@param list T[]
 ---@param callback fun(key: T, value: T):boolean
@@ -230,6 +250,7 @@ function tablepp.filteri(list, callback)
     return result
 end
 
+--- returns `#list`
 ---@generic T
 ---@param list T[]
 ---@return integer

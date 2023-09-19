@@ -7,6 +7,11 @@ local expected_args = aux.expected_args
 
 local stringpp = {}
 
+--- Return a version of the string where each word is titlecased.
+---```
+---stringpp.title("exAMPLe") --> Example
+---stringpp.title("morE onE EXAmPLE") --> More One Example
+---```
 ---@param s string
 ---@return string
 function stringpp.title(s)
@@ -19,6 +24,11 @@ function stringpp.title(s)
     return table.concat(spl, " ")
 end
 
+--- Return a capitalized version of the string.
+---```
+---stringpp.capitalize("fiRST eXAMPLe") --> First example
+---stringpp.capitalize("sECOND example") --> Second example
+---```
 ---@param s string
 ---@return string
 function stringpp.capitalize(s)
@@ -26,6 +36,7 @@ function stringpp.capitalize(s)
     return string.upper(string.sub(s, 1)) .. string.lower(string.sub(s, 2))
 end
 
+--- Return a version of the string suitable for caseless comparisons.
 ---@param s string
 ---@return string
 function stringpp.casefold(s)
@@ -82,6 +93,7 @@ function stringpp.right(s, width, fillchar)
     return fillchar_rep_res .. s
 end
 
+--- returns how many times `x` appeared in `s` starting from the `start` position to the `stop` position
 ---@param s string
 ---@param x string
 ---@param start? integer
@@ -106,6 +118,9 @@ function stringpp.count(s, x, start, stop)
     return res
 end
 
+--- Return True if the string is an alphabetic string, False otherwise.
+--- A string is alphabetic if all characters in the string are alphabetic and there
+--- is at least one character in the string.
 ---@param s string
 ---@return boolean
 function stringpp.isalpha(s)
@@ -115,6 +130,9 @@ function stringpp.isalpha(s)
            string.match(s, "%d") == nil
 end
 
+--- Return True if the string is a decimal string, False otherwise.
+--- A string is a decimal string if all characters in the string are decimal and
+--- there is at least one character in the string.
 ---@param s string
 ---@return boolean
 function stringpp.isdecimal(s)
@@ -122,6 +140,9 @@ function stringpp.isdecimal(s)
     return tonumber(s) ~= nil
 end
 
+--- Return True if the string is a lowercase string, False otherwise.
+--- A string is lowercase if all cased characters in the string are lowercase and
+--- there is at least one cased character in the string.
 ---@param s string
 ---@return boolean
 function stringpp.islower(s)
@@ -129,6 +150,9 @@ function stringpp.islower(s)
     return s == string.lower(s)
 end
 
+--- Return True if the string is an uppercase string, False otherwise.
+--- A string is uppercase if all cased characters in the string are uppercase and
+--- there is at least one cased character in the string.
 ---@param s string
 ---@return boolean
 function stringpp.isupper(s)
@@ -136,6 +160,9 @@ function stringpp.isupper(s)
     return s == string.upper(s)
 end
 
+--- Return True if the string is a whitespace string, False otherwise.
+--- A string is whitespace if all characters in the string are whitespace and there
+--- is at least one character in the string.
 ---@param s string
 ---@return boolean
 function stringpp.isspace(s)
@@ -144,6 +171,9 @@ function stringpp.isspace(s)
     return string.gsub(s, " ", "") == ""
 end
 
+--- Return True if the string is a title-cased string, False otherwise.
+--- In a title-cased string, upper- and title-case characters may only
+--- follow uncased characters and lowercase characters only cased ones.
 ---@param s string
 ---@return boolean
 function stringpp.istitle(s)
@@ -151,10 +181,16 @@ function stringpp.istitle(s)
     return s == stringpp.title(s)
 end
 
+--- splits `s` with `sep` separator
+---```
+---stringpp.split("Hello World!") --> {"Hello", "World!"}
+---stringpp.split("Hello,World!,") --> {"Hello", "World!", ""}
+---```
 ---@param s string
 ---@param sep string
 ---@return table
 function stringpp.split(s, sep)
+    sep = sep or " "
     expected_args("split", {s, sep}, {"string", "string"})
 
     s = s .. sep
