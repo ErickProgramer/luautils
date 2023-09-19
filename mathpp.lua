@@ -254,7 +254,6 @@ end
 ---@param i number
 ---@return number
 function math.ldexp(x, i)
-    lua_math.ldexp
     expected_args("ldexp", {x, i}, {"number", "number"})
     return x * 2 ^ i
 end
