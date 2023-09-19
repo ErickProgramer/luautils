@@ -1,31 +1,9 @@
 --      stringpp (string plus plus)
 --  expansion of string lib
 
-local format = string.format
+local aux = require("auxiliar")
 
--- expansion of `type`
-local function type_pp(x)
-    if math.type(x) ~= "nil" then return math.type(x) else return type(x) end
-end
-
-local function expected_arg(func_name, x, tp, arg)
-    if tp == "float" or tp == "integer" then
-        assert(math.type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type_pp(x)))
-    else
-        assert(type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type(x)))
-    end
-end
-
--- to errors
----@param func_name string
----@param values table
----@param expected table
-local function expected_args(func_name, values, expected)
-    for i = 1, #values do
-        expected_arg(func_name, values[i], expected[i], i)
-    end
-end
-
+local expected_args = aux.expected_args
 
 local stringpp = {}
 
