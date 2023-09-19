@@ -153,11 +153,82 @@ function tablepp.sort(t, reverse)
 end
 
 ---@generic T
----@param t table
----@return ...<T>
+---@param t T[]
+---@return T ...
 function tablepp.unpack(t)
     expected_args("unpack", {t}, {"table"})
     return unpack(t)
+end
+
+---@generic T
+---@param list T[]
+---@param callback fun(key: T, value: T): T | nil
+---@return nil
+function tablepp.foreach(list, callback)
+    expected_args("foreach", {list, callback}, {"table", "function"})
+
+    if table.foreach then
+        return table.foreach(list, callback)
+    end
+
+    for k, v in pairs(list) do
+        local res = callback(k, v)
+        if res ~= nil then return res end
+    end
+
+    return nil
+end
+
+---@generic T
+---@param list T[]
+---@param callback fun(key: T, value: T): T | nil
+---@return nil
+function tablepp.foreachi(list, callback)
+    if table.foreachi then
+        return table.foreachi(list, callback)
+    end
+
+    for k, v in ipairs(list) do
+        local res = callback(k, v)
+        if res ~= nil then return res end
+    end
+
+    return nil
+end
+
+---@generic T
+---@param list T[]
+---@param callback fun(key: T, value: T):boolean
+---@return table
+function tablepp.filter(list, callback)
+    local result = {}
+    for k, v in pairs(list) do
+        if callback(k, v) then
+            result[k] = v
+        end
+    end
+    return result
+end
+
+---@generic T
+---@param list T[]
+---@param callback fun(key: T, value: T):boolean
+---@return table
+function tablepp.filteri(list, callback)
+    local result = {}
+    for k, v in ipairs(list) do
+        if callback(k, v) then
+            table.insert(result, v)
+        end
+    end
+    return result
+end
+
+---@generic T
+---@param list T[]
+---@return integer
+function tablepp.getn(list)
+    return #list
 end
 
 return tablepp
