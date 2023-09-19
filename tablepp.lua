@@ -184,6 +184,8 @@ end
 ---@param callback fun(key: T, value: T): T | nil
 ---@return nil
 function tablepp.foreachi(list, callback)
+    expected_args("foreachi", {list, callback}, {"table", "function"})
+
     if table.foreachi then
         return table.foreachi(list, callback)
     end
@@ -201,6 +203,8 @@ end
 ---@param callback fun(key: T, value: T):boolean
 ---@return table
 function tablepp.filter(list, callback)
+    expected_args("filter", {list, callback}, {"table", "function"})
+
     local result = {}
     for k, v in pairs(list) do
         if callback(k, v) then
@@ -215,6 +219,8 @@ end
 ---@param callback fun(key: T, value: T):boolean
 ---@return table
 function tablepp.filteri(list, callback)
+    expected_args("filteri", {list, callback}, {"table", "function"})
+
     local result = {}
     for k, v in ipairs(list) do
         if callback(k, v) then
@@ -228,6 +234,8 @@ end
 ---@param list T[]
 ---@return integer
 function tablepp.getn(list)
+    expected_args("getn", {list}, {"table"})
+
     return #list
 end
 
