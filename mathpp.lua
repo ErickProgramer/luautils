@@ -1,34 +1,10 @@
 --             mathpp (math plus plus)
 -- extension of the standard Lua Lib (math)
 
+local aux = require("auxiliar")
 local lua_math = require("math")
 
-local format = string.format
-
-
-
--- expansion of `type`
-local function type_pp(x)
-    if lua_math.type(x) ~= "nil" then return lua_math.type(x) else return type(x) end
-end
-
-local function expected_arg(func_name, x, tp, arg)
-    if tp == "float" or tp == "integer" then
-        assert(lua_math.type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type_pp(x)))
-    else
-        assert(type(x) == tp, format("bad argument #%d to '%s' (%s expected, got %s)", arg, func_name, tp, type(x)))
-    end
-end
-
--- to errors
----@param func_name string
----@param values table
----@param expected table
-local function expected_args(func_name, values, expected)
-    for i = 1, #values do
-        expected_arg(func_name, values[i], expected[i], i)
-    end
-end
+local expected_args = aux.expected_args
 
 local math = {}
 
