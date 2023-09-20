@@ -260,4 +260,192 @@ function tablepp.getn(list)
     return #list
 end
 
+---@generic T
+---@param list T[]
+---@param value T
+function tablepp.append(list, value)
+    expected_args("append", {list}, {"table"})
+    list[#list+1] = value
+end
+
+--- returns how many times `value` appears in `t`
+---@generic T
+---@param list T[]
+---@param value any
+---@return integer
+function tablepp.count(list, value)
+    expected_args("count", {list}, {"table"})
+
+    local res = 0
+    for k, v in pairs(list) do
+        if v == value then res = res + 1 end
+    end
+    return res
+end
+
+-- auxiliar function for copy
+local function recursive_copy(t)
+    local copy = {}
+    for k, v in pairs(t) do
+        if type(t) == "table" then
+            copy[k] = tablepp.copy(v)
+        else
+            copy[k] = v
+        end
+    end
+    return copy
+end
+
+--- returns an identical copy of `t`
+---@generic T
+---@param t T[]
+---@return T[]
+function tablepp.copy(t)
+    expected_args("copy", {t}, {"table"})
+    return recursive_copy(t)
+end
+
+--- returns the reverse order of T
+---@generic T
+---@param t T[]
+---@return T[]
+function tablepp.reverse(t)
+    expected_args("reverse", {t}, {"table"})
+
+    local reverse = {}
+    local pos = 1
+    for i = #t, 1, -1 do
+        reverse[pos] = t[i]
+        pos = pos + 1
+    end
+    return reverse
+end
+
+--- returns `t` starting at `start` to `stop` skipping at `step`
+---@generic T
+---@param t T []
+---@param start integer
+---@param stop? integer
+---@param step? integer
+---@return table
+function tablepp.slice(t, start, stop, step)
+    step = step or 1
+    if start and not stop then
+        stop, start = start, 1
+    end
+    expected_args("slice", {t, start, stop, step}, {"table", "integer", "integer", "integer"})
+
+    local result = {}
+    local pos = 1
+    for i = start, stop, step do
+        result[pos] = t[i]
+        pos = pos + 1
+    end
+
+    return result
+end
+
+--- returns at which index `value` appears
+---@generic T
+---@param t T[]
+---@param value any
+---@return T | nil
+function tablepp.index(t, value)
+    expected_args("index", {t}, {"table"})
+
+    for k, v in pairs(t) do
+        if v == value then return k end
+    end
+    return nil
+end
+
+---
+---Moves elements from table `a1` to table `a2`.
+---```lua
+---a2[t],··· =
+---a1[f],···,a1[e]
+---return a2
+---```
+---@param a1  table
+---@param f   integer
+---@param e   integer
+---@param t   integer
+---@param a2? table
+---@return table a2
+function tablepp.move(a1, f, e, t, a2)
+    return table.move(a1, f, e, t, a2)
+end
+
+--- returns if `t` is list or dict
+---@param t table
+---@return "dict" | "list"
+function tablepp.type(t)
+    expected_args("type", {t}, {"table"})
+
+    local len = 0
+    for k, v in pairs(t) do
+        len = len + 1
+    end
+    if len ~= #t then return "dict" else return "list" end
+end
+
+--- returns the keys of `t`
+---@param t table
+---@return table
+function tablepp.keys(t)
+    expected_args("keys", {t}, {"table"})
+
+    local keys = {}
+    local p = 1
+    for k in pairs(t) do
+        keys[p] = k
+        p = p + 1
+    end
+    return keys
+end
+
+--- returns the values of `t`
+---@param t table
+---@return table
+function tablepp.values(t)
+    expected_args("values", {t}, {"table"})
+
+    local values = {}
+    local p = 1
+    for _, v in pairs(t) do
+        values[p] = v
+        p = p + 1
+    end
+
+    return values
+end
+
+local function recursive_tolist(dict)
+    local res = {}
+    local p = 1
+
+    for k, v in pairs(dict) do
+        if type(v) == "table" then
+            res[p] = {k, recursive_tolist(v)}
+        else
+            res[p] = {k, v}
+        end
+        p = p + 1
+    end
+
+    return res
+end
+
+--- transforms `dict` to `list`
+---```
+---local dict = {a = 1, b = 2, c = 3}
+---tablepp.tolist(dict) --> {{a, 1}, {b, 2}, {c, 3}}
+---```
+---@param dict table
+---@return table
+function tablepp.tolist(dict)
+    expected_args("tolist", {dict}, {"table"})
+    return recursive_tolist(dict)
+end
+
 return tablepp
