@@ -85,6 +85,7 @@ if ospp.get() == "win" then
     end
 else
     function ospp.listdir(dirpath)
+        if dirpath == nil then dirpath = "." end
         local p = io.popen('ls -A1 "'..dirpath..'"')
         local files = {}
 
