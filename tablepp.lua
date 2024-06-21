@@ -1,10 +1,40 @@
-local unpack = table.unpack or unpack
-local format = string.format
+-- MIT License
+--
+-- Copyright (c) 2023 LuaUtils
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in all
+-- copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
 
-local aux = require("auxiliar")
+local table = require("table")
+local math = require("math")
+
+local ok, aux = pcall(require, "luautils.auxiliar")
+if not ok then
+    ok, aux = pcall(require, "auxiliar")
+end
+
 local expected_args = aux.expected_args
 
+---@class tablepplib: tablelib
 local tablepp = {}
+setmetatable(tablepp, {
+    __index = table
+})
 
 --- returns the largest value of `t`
 ---@param t table
@@ -13,7 +43,7 @@ function tablepp.max(t)
     expected_args("max", {t}, {"table"})
 
     if math.max then
-        return math.max(unpack(t))
+        return math.max(tablepp.unpack(t))
     end
 
     local max_value = t[1]
@@ -104,77 +134,57 @@ function tablepp.list_tostring(t)
     return str .."}"
 end
 
---- print the table `t`
----```
----tablepp.list_print({1,2})
----```
---- {1, 2}
----@param t table
----@param end_line? string
-function tablepp.list_print(t, end_line)
-    end_line = end_line or "\n"
+function tablepp.print_table(t)
+    io.write("\27[30m{ \27[m")
+    if tablepp.type(t) == "dict" then
+        for k, v in pairs(t) do
+            if type(k) == "string" then
+                if not k:find("[%W ]") then
+                    io.write(tostring(k) .. " = ")
+                else
+                    io.write("[\27[32m'" .. tostring(k) .. "'\27[m] = ")
+                end
+            elseif type(k) == "number" or type(k) == "number" then
+                io.write("[\27[33m" .. tostring(k) .. "\27[m] = ")
+            elseif type(k) == "function" then
+                io.write("\27[35m" .. tostring(k) .. "\27[m] = ")
+            elseif type(k) == "table" then
+                io.write("[")
+                tablepp.print_table(k)
+                io.write("]")
+            end
 
-    expected_args("list_print", {t, end_line}, {"table", "string"})
-
-    local function s()
-        io.write("{")
-        for i, v in ipairs(t) do
             if type(v) == "string" then
-                io.write("'"..v:gsub("\n", "\\n").."'")
-            elseif type(v) ~= "table" then
-                io.write(tostring(v))
-            else
-                tablepp.list_print(v)
+                io.write("\27[32m'" .. tostring(v) .. "'\27[m")
+            elseif type(v) == "number" or type(v) == "number" then
+                io.write("\27[33m" .. tostring(v) .. "\27[m")
+            elseif type(v) == "function" then
+                io.write("\27[35m" .. tostring(v) .. "\27[m")
+            elseif type(v) == "table" then
+                tablepp.print_table(v)
             end
 
             io.write(", ")
         end
-        io.write("}")
-    end
-    s()
-    io.write(end_line)
-end
-
---- similar to Lua's standard print, but with table support
----@param ... any
-function tablepp.print(...)
-    local args = {...}
-    for i, v in ipairs(args) do
-        if type(v) == "table" then
-            tablepp.list_print(v, "\t")
-        else
-            io.write(v)
-            io.write("\t")
+    else
+        for i, v in ipairs(t) do
+            if type(v) == "string" then
+                io.write("\27[32m'" .. tostring(v) .. "'\27[m")
+            elseif type(v) == "number" or type(v) == "number" then
+                io.write("\27[33m" .. tostring(v) .. "\27[m")
+            elseif type(v) == "function" then
+                io.write("\27[35m" .. tostring(v) .. "\27[m")
+            elseif type(v) == "table" then
+                tablepp.print_table(v)
+            end
+            io.write(", ")
         end
     end
-    io.write("\n")
+
+    io.write("\27[30m }\27[m")
 end
 
---- orders from smallest to largest by default, but if `reverse` is true, it orders from largest to smallest
----@param t table
----@param reverse? boolean
-function tablepp.sort(t, reverse)
-    expected_args("sort", {t, reverse}, {"table", "boolean"})
-
-    if reverse then
-        table.sort(t, function (a, b)
-            return a > b
-        end)
-    else
-        table.sort(t, function (a, b)
-            return a < b
-        end)
-    end
-end
-
---- works exactly the same as the Lua unpack, but with support for all versions of Lua
----@generic T
----@param t T[]
----@return T ...
-function tablepp.unpack(t)
-    expected_args("unpack", {t}, {"table"})
-    return unpack(t)
-end
+tablepp.unpack = unpack or table.unpack
 
 ---Executes the given f over all elements of table. For each element, f is called with the index and respective value as arguments. If f returns a non-nil value, then the loop is broken, and this value is returned as the final value of foreach.
 ---@generic T
@@ -183,10 +193,6 @@ end
 ---@return T | nil
 function tablepp.foreach(list, callback)
     expected_args("foreach", {list, callback}, {"table", "function"})
-
-    if table.foreach then
-        return table.foreach(list, callback)
-    end
 
     for k, v in pairs(list) do
         local res = callback(k, v)
@@ -203,10 +209,6 @@ end
 ---@return T | nil
 function tablepp.foreachi(list, callback)
     expected_args("foreachi", {list, callback}, {"table", "function"})
-
-    if table.foreachi then
-        return table.foreachi(list, callback)
-    end
 
     for k, v in ipairs(list) do
         local res = callback(k, v)
@@ -446,6 +448,18 @@ end
 function tablepp.tolist(dict)
     expected_args("tolist", {dict}, {"table"})
     return recursive_tolist(dict)
+end
+
+---@param t table
+---@return any
+function tablepp.pop(t)
+    return table.remove(t)
+end
+
+function tablepp.push(t, v)
+    expected_args("push", {t}, {"table"})
+    table.insert(t, v)
+    return v
 end
 
 return tablepp

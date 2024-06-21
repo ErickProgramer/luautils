@@ -1,12 +1,19 @@
+local math = require("math")
 local aux = {}
 
+local type = type
+
 --- expands the `type` function
---- if the type of `x` is a number, he return float or integer,
+--- if the type of `x` is a number, it returns float or integer,
 --- else return: `type(x)`
 ---@param x any
 ---@return string
 function aux.type_pp(x)
-    if math.type(x) ~= "nil" then return math.type(x) else return type(x) end
+    if type(x) ~= "number" then
+        return type(x)
+    end
+    local _, d = math.modf(x)
+    return d == 0 and "integer" or "float"
 end
 
 --- checks if the `parameter` is of type `parameter_expected`

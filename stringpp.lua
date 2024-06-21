@@ -1,16 +1,44 @@
+-- MIT License
+--
+-- Copyright (c) 2023 LuaUtils
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in all
+-- copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
+
 --      stringpp (string plus plus)
 --  expansion of string lib
 
-local aux = require("auxiliar")
+
+local ok, aux = pcall(require, "luautils.auxiliar")
+if not ok then
+    ok, aux = pcall(require, "auxiliar")
+end
 
 local expected_args = aux.expected_args
 
+
+---@class stringpplib: stringlib
 local stringpp = {}
 
---- Return a version of the string where each word is titlecased.
+--- it returns a version of the string where each word is titlecased.
 ---```
 ---stringpp.title("exAMPLe") --> Example
----stringpp.title("morE onE EXAmPLE") --> More One Example
+---stringpp.title("anotheR EXAmPLE") --> Another Example
 ---```
 ---@param s string
 ---@return string
@@ -24,7 +52,7 @@ function stringpp.title(s)
     return table.concat(spl, " ")
 end
 
---- Return a capitalized version of the string.
+--- it returns a capitalized version of the string.
 ---```
 ---stringpp.capitalize("fiRST eXAMPLe") --> First example
 ---stringpp.capitalize("sECOND example") --> Second example
