@@ -116,7 +116,7 @@ if ospp.get() == "win" then
         if dirpath == nil then dirpath = "." end
         dirpath = dirpath:gsub("/", "\\"):gsub("\\+", "\\")
 
-        if not ospp.exist(dirpath) then
+        if not ospp.exists(dirpath) then
             return nil
         end
 
@@ -150,7 +150,7 @@ else -- unix
         if dirpath == nil then dirpath = "." end
         dirpath = dirpath:gsub("\\", "/"):gsub("/+", "/")
 
-        if not ospp.exist(dirpath) then
+        if not ospp.exists(dirpath) then
             return nil
         end
 
