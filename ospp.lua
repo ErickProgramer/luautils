@@ -134,7 +134,11 @@ if ospp.get() == "win" then
 
     function ospp.rmdir(path)
         path = path:gsub("/", "\\"):gsub("\\+", "\\")
+        if not ospp.exists(path) then
+            return false
+        end
         io.popen('rmdir /s /q "'..path..'"')
+        return true
     end
 else -- unix
     function ospp.exists(path)
@@ -168,7 +172,11 @@ else -- unix
 
     function ospp.rmdir(path)
         path = path:gsub("\\", "/"):gsub("/+", "/")
+        if not ospp.exists(path) then
+            return false
+        end
         io.popen('rm -rf "' .. path .. '"')
+        return true
     end
 end
 
