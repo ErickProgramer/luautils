@@ -131,6 +131,11 @@ if ospp.get() == "win" then
     function ospp.setenv(name, value)
         io.popen('setx ' .. name .. ' "' .. value .. '"'):close()
     end
+
+    function ospp.rmdir(path)
+        path = path:gsub("/", "\\"):gsub("\\+", "\\")
+        io.popen('rmdir /s /q "'..path..'"')
+    end
 else -- unix
     function ospp.exist(path)
         path = path:gsub("\\", "/"):gsub("/+", "/")
@@ -159,6 +164,11 @@ else -- unix
 
     function ospp.setenv(name, value)
         io.popen('export ' .. name .. '="' .. value .. '"')
+    end
+
+    function ospp.rmdir(path)
+        path = path:gsub("\\", "/"):gsub("/+", "/")
+        io.popen('rm -rf "' .. path .. '"')
     end
 end
 
