@@ -107,7 +107,7 @@ function ospp.mkdir(dirname)
 end
 
 if ospp.get() == "win" then
-    function ospp.exist(path)
+    function ospp.exists(path)
         path = path:gsub("/", "\\"):gsub("\\+", "\\")
         return io.popen('if exist "'..path..'" (echo ok)'):read() == "ok"
     end
@@ -137,7 +137,7 @@ if ospp.get() == "win" then
         io.popen('rmdir /s /q "'..path..'"')
     end
 else -- unix
-    function ospp.exist(path)
+    function ospp.exists(path)
         path = path:gsub("\\", "/"):gsub("/+", "/")
         return io.popen('[ -e "' .. path .. '" ] && echo ok'):read() == "ok"
     end
