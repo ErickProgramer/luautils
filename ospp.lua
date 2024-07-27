@@ -112,6 +112,17 @@ if ospp.get() == "win" then
         return io.popen('if exist "'..path..'" (echo ok)'):read() == "ok"
     end
 
+    function ospp.dir(dirpath)
+      if dirpath == nil then dirpath = "." end
+      dirpath = dirpath:gsub("/", "\\"):gsub("\\+", "\\")
+      
+      if not ospp.exists(dirpath) then
+        return nil
+      end
+
+      return io.popen('dir "' .. dirpath .. '" /b /a'):lines()
+    end
+
     function ospp.listdir(dirpath)
         if dirpath == nil then dirpath = "." end
         dirpath = dirpath:gsub("/", "\\"):gsub("\\+", "\\")
@@ -144,6 +155,17 @@ else -- unix
     function ospp.exists(path)
         path = path:gsub("\\", "/"):gsub("/+", "/")
         return io.popen('[ -e "' .. path .. '" ] && echo ok'):read() == "ok"
+    end
+
+    function ospp.dir(dirpath)
+      if dirpath == nil then dirpath = "." end
+      dirpath = dirpath:gsub("\\", "/"):gsub("/+", "/")
+
+      if not ospp.exists(dirpath) then
+          return nil
+      end
+
+      return io.popen('ls -A1 "'..dirpath..'"'):lines()
     end
 
     function ospp.listdir(dirpath)
